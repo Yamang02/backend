@@ -162,6 +162,28 @@
 
 	</table>
 
+	<h3>2) c:forTokens 태그</h3>
+	<p>문자열에 포함된 구분자를 통해 토큰을 분리해 반복을 수행하는 태그</p>
+
+	<ul>
+		<c:forTokens var="color" items="pink red tomato lime yellowgreen aqua" delims=" ">
+			<li style="color : ${color}">${ color }</li>
+		</c:forTokens>
+	</ul>
+
+	<h2>5. c:url 태그</h2>
+	<p>URL을 생성하고 쿼리 스트링을 미리 설정하는 태그이다.</p>
+
+	<c:url var="url" value="/views/el/elParam.jsp">
+
+		<c:param name="pName" value="아이폰 12 미니" />
+		<c:param name="pCount" value="2" />
+		<c:param name="option" value="화이트" />
+		<c:param name="option" value="128GB" />
+
+
+	</c:url>
+	<a href="${url}">이동</a>
 
 
 </body>
