@@ -1,59 +1,87 @@
 package com.kh.mvc.member.model.dao;
 
+import static com.kh.mvc.common.jdbc.JDBCTemplate.close;
+
 import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import com.kh.mvc.member.model.vo.Member;
 
 public class MemberDao {
 
-	public Member findMemberById(String userId) {
-		Connection connection = null;
-		Statement statement = null;
-		ResultSet resultSet = null;
-		String query = "SELECT * FROM MEMBER WHERE ID='admin2' AND STATUS='Y'";
+	public Member findMemberById(Connection connection, String userId) {
+		Member member = null;
+		ResultSet rs = null;
+		PreparedStatement pstmt = null;
+		String query = "SELECT * FROM MEMBER WHERE ID=? AND STATUS='Y'";
 
 		// 1.Driver 등록 (DriverManager)
 		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
 
-			// 2. DBMS 연결 (Connection) : 매개변수로 DBMS 포트, ID, PWD
-			connection = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "WEB", "WEB");
-
+			// 2. connection은 서비스에서 받아옴
 			// 3. Statement 생성(실제 쿼리문을 수행하는 객체)
-			statement = connection.createStatement();
+			pstmt = connection.prepareStatement(query);
+
+			pstmt.setString(1, userId);
 
 			// 4. statement에 쿼리 입력 - 전송, resultset 반환 - 결과 받기
-			resultSet = statement.executeQuery(query);
+			rs = pstmt.executeQuery();
 
 			// 결과행이 없을 때까지 반복
-			while (resultSet.next()) {
-				System.out.println(resultSet.getInt("NO"));
-				System.out.println(resultSet.getString("ID"));
-				System.out.println(resultSet.getString(3));
-				System.out.println(resultSet.getString(4));
+			while (rs.next()) {
+				member = new Member();
+
+				member.setNo(rs.getInt("NO"));
+				member.setId(rs.getString("ID"));
+				member.setPassword(rs.getString("PASSWORD"));
+				member.setRole(rs.getString("ROLE"));
+				member.setName(rs.getString("NAME"));
+				member.setPhone(rs.getString("PHONE"));
+				member.setEmail(rs.getString("EMAIL"));
+				member.setAddress(rs.getString("ADDRESS"));
+				member.setHobby(rs.getString("HOBBY"));
+				member.setStatus(rs.getString("STATUS"));
+				member.setEnrollDate(rs.getDate("ENROLL_DATE"));
+				member.setModifyDate(rs.getDate("MODIFY_DATE"));
 			}
 
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				// while문에 error가 있더라도 멈추지 않고 모두 닫아주는 구문
-				resultSet.close();
-				statement.close();
-				connection.close();
-
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			close(rs);
+			close(pstmt);
 		}
 
-		return null;
+		return member;
+	}
+
+	public int insertMember(Connection connection, Member member) {
+		int result = 0;
+		PreparedStatement pstmt = null;
+		String query = "INSERT INTO MEMBER VALUES(SEQ_UNO.NEXTVAL,?,?,DEFAULT,?,?,?,?,?,DEFAULT,DEFAULT,DEFAULT)";
+
+		try {
+			pstmt = connection.prepareStatement(query);
+
+			pstmt.setString(1, member.getId());
+			pstmt.setString(2, member.getPassword());
+			pstmt.setString(3, member.getName());
+			pstmt.setString(4, member.getPhone());
+			pstmt.setString(5, member.getEmail());
+			pstmt.setString(6, member.getAddress());
+			pstmt.setString(7, member.getHobby());
+
+			result = pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+		}
+
+		return result;
 	}
 
 }

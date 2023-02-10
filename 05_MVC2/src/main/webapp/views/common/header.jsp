@@ -1,7 +1,6 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<c:set var="path" value="${ pageContext.request.contextPath }"/>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<c:set var="path" value="${ pageContext.request.contextPath }" />
 
 <!DOCTYPE html>
 <html>
@@ -14,31 +13,52 @@
 <body>
 	<header>
 		<h1>Hello MVC</h1>
+
 		<div class="login-container">
-			<form id="loginFrm" action="${ path }/login" method="post">
+			<c:if test="${ empty loginMember }">
+				<form id="loginFrm" action="${ path }/login" method="post">
+					<table>
+						<tr>
+							<td>
+								<input type="text" name="userId" id="userId" placeholder="아이디" value="${ empty cookie.saveId? '' : cookie.saveId.value }" required>
+							</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>
+								<input type="password" name="userPwd" id="userPwd" placeholder="비밀번호" required>
+							</td>
+							<td>
+								<input type="submit" value="로그인">
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								<label><input type="checkbox" name="saveId"${ empty cookie.saveId? "" : "checked"} }>아이디 저장</label>
+								<input type="button" value="회원가입" onclick="location.href = '${ path }/member/enroll';">
+							</td>
+						</tr>
+					</table>
+				</form>
+			</c:if>
+
+			<c:if test="${ not empty loginMember }">
 				<table>
 					<tr>
-						<td>
-							<input type="text" name="userId" id="userId" placeholder="아이디" required>
-						</td>
-						<td></td>
+						<td colspan="2">${ loginMember.name }님안녕하세요.
 					</tr>
 					<tr>
 						<td>
-							<input type="password" name="userPwd" id="userPwd" placeholder="비밀번호" required>
+							<button>내 정보</button>
 						</td>
 						<td>
-							<input type="submit" value="로그인">						
-						</td>
-					</tr>
-					<tr>
-						<td colspan="2">
-							<label><input type="checkbox" name="saveId">아이디 저장</label>
-							<input type="button" value="회원가입" onclick="location.href = '${ path }/member/enroll';"> 
+							<button onclick="location.replace('${ path }/logout')">로그아웃</button>
 						</td>
 					</tr>
 				</table>
-			</form>
+			</c:if>
+
+
 		</div>
 		<nav>
 			<ul class="main-nav">
@@ -47,4 +67,4 @@
 				<li id="admin-member"><a href="${ path }/">회원관리</a></li>
 			</ul>
 		</nav>
-	</header> 
+	</header>
