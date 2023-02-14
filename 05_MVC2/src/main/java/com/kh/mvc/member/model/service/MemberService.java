@@ -14,12 +14,7 @@ public class MemberService {
 
 	public Member login(String userId, String userPwd) {
 		Member member = null;
-		Connection connection = getConnection();
-
-		member = new MemberDao().findMemberById(connection, userId);
-
-		close(connection);
-
+		member = this.findMemberById(userId);
 		if (member == null || !member.getPassword().equals(userPwd)) {
 			return null;
 		}
@@ -30,7 +25,13 @@ public class MemberService {
 		int result = 0;
 		Connection connection = getConnection();
 
-		result = new MemberDao().insertMember(connection, member);
+		if (member.getNo() > 0) {
+			// update 작업
+			result = new MemberDao().updateMember(connection, member);
+		} else {
+			// insert 작업
+			result = new MemberDao().insertMember(connection, member);
+		}
 
 		if (result > 0) {
 			commit(connection);
@@ -41,6 +42,59 @@ public class MemberService {
 		close(connection);
 
 		return result;
+	}
+
+	public boolean isDuplicateId(String userId) {
+		boolean result = false;
+		result = (this.findMemberById(userId) != null);
+		return result;
+	}
+
+	public Member findMemberById(String userId) {
+		Member member = null;
+
+		Connection connection = getConnection();
+
+		member = new MemberDao().findMemberById(connection, userId);
+
+		close(connection);
+
+		return member;
+	}
+
+	public int updatePassword(int no, String userPwd) {
+		int result = 0;
+
+		Connection connection = getConnection();
+
+		result = new MemberDao().updateMemberPassword(connection, no, userPwd);
+
+		if (result > 0) {
+			commit(connection);
+		} else {
+			rollback(connection);
+		}
+
+		close(connection);
+
+		return result;
+	}
+
+	public int delete(int no) {
+		int result = 0;
+		Connection connection = getConnection();
+
+		result = new MemberDao().updateMemberStatus(connection, no, "N");
+
+		if (result > 0) {
+			commit(connection);
+		} else {
+			rollback(connection);
+		}
+		close(connection);
+
+		return result;
+
 	}
 
 }

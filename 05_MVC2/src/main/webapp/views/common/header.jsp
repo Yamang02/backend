@@ -34,7 +34,10 @@
 						</tr>
 						<tr>
 							<td colspan="2">
-								<label><input type="checkbox" name="saveId"${ empty cookie.saveId? "" : "checked"} }>아이디 저장</label>
+								<label>
+									<input type="checkbox" name="saveId"${ empty cookie.saveId? "" : "checked"} }>
+									아이디 저장
+								</label>
 								<input type="button" value="회원가입" onclick="location.href = '${ path }/member/enroll';">
 							</td>
 						</tr>
@@ -49,7 +52,7 @@
 					</tr>
 					<tr>
 						<td>
-							<button>내 정보</button>
+							<button onclick="location.href='${ path }/member/myPage'">내 정보</button>
 						</td>
 						<td>
 							<button onclick="location.replace('${ path }/logout')">로그아웃</button>
@@ -63,7 +66,7 @@
 		<nav>
 			<ul class="main-nav">
 				<li class="home"><a href="${ path }/">Home</a></li>
-				<li id="board"><a href="${ path }/">게시판</a></li>
+				<li id="board"><a href="${ path }/board/list">게시판</a></li>
 				<li id="admin-member"><a href="${ path }/">회원관리</a></li>
 			</ul>
 		</nav>

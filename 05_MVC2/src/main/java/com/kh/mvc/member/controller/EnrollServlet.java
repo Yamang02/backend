@@ -36,7 +36,13 @@ public class EnrollServlet extends HttpServlet {
 		member.setPhone(request.getParameter("phone"));
 		member.setEmail(request.getParameter("email"));
 		member.setAddress(request.getParameter("address"));
-		member.setHobby(String.join(",", request.getParameterValues("hobby")));
+//		member.setHobby(String.join(",", request.getParameterValues("hobby")));
+
+		String hobby = request.getParameterValues("hobby") != null
+				? String.join(",", request.getParameterValues("hobby"))
+				: null;
+
+		member.setHobby(hobby);
 
 		System.out.println(member);
 

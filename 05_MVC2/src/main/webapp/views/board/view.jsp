@@ -26,68 +26,75 @@
     table#tbl-comment sub.comment-date {color:tomato; font-size:10px}
 </style>
 <section id="content">   
-	<div id="board-write-container">
-		<h2>게시판</h2>
-		<table id="tbl-board">
-			<tr>
-				<th>글번호</th>
-				<td></td>
-			</tr>
-			<tr>
-				<th>제 목</th>
-				<td></td>
-			</tr>
-			<tr>
-				<th>작성자</th>
-				<td></td>
-			</tr>
-			<tr>
-				<th>조회수</th>
-				<td></td>
-			</tr>
-			<tr>
-				<th>첨부파일</th>
-				<td>
-					<span style="color: gray;"> - </span>
-				</td>
-			</tr>
-			<tr>
-				<th>내 용</th>
-				<td></td>
-			</tr>
-			<%--글작성자/관리자인경우 수정삭제 가능 --%>
-			<tr>
-				<th colspan="2">
-					<button type="button">수정</button>
-					<button type="button">삭제</button>
-					<button type="button">목록으로</button>
-				</th>
-			</tr>
-		</table>
-		<div id="comment-container">
-	    	<div class="comment-editor">
-	    		<form action="${ path }/board/reply" method="POST">
-	    			<input type="hidden" name="boardNo" value="">
-	    			<input type="hidden" name="writer" value="">
-					<textarea name="content" cols="55" rows="3"></textarea>
-					<button type="submit" id="btn-insert">등록</button>	    			
-	    		</form>
-	    	</div>
-	    </div>
-	    <table id="tbl-comment">
-    	   	<tr class="level1">
-	    		<td>
-	    			<sub class="comment-writer">aa</sub>
-	    			<sub class="comment-date">2021.05.07</sub>
-	    			<br>
-	    			컨텐츠
-	    		</td>
-	    		<td>
-    				<button class="btn-delete">삭제</button>
+   <div id="board-write-container">
+      <h2>게시판</h2>
+      <table id="tbl-board">
+         <tr>
+            <th>글번호</th>
+            <td>${ board.no }</td>
+         </tr>
+         <tr>
+            <th>제 목</th>
+            <td>${ board.title }</td>
+         </tr>
+         <tr>
+            <th>작성자</th>
+            <td>${ board.writerId }</td>
+         </tr>
+         <tr>
+            <th>조회수</th>
+            <td>${ board.readCount }</td>
+         </tr>
+         <tr>
+            <th>첨부파일</th>
+            <td>
+               <c:if test="${ empty board.originalFileName }">
+                  <span style="color: gray;"> - </span>
+               </c:if>
+               <c:if test="${ not empty board.originalFileName }">
+                  <span> ${ board.originalFileName } </span>
+               </c:if>
+            </td>
+         </tr>
+         <tr>
+            <th>내 용</th>
+            <td>${ board.content }</td>
+         </tr>
+         <%--글작성자/관리자인경우 수정삭제 가능 --%>
+         <tr>
+            <th colspan="2">
+               <c:if test="${ not empty loginMember && loginMember.id == board.writerId }">
+                  <button type="button" onclick="location.href='${ path }/board/update?no=${ board.no }'">수정</button>
+                  <button type="button">삭제</button>
+               </c:if>
+               <button type="button" onclick="javascript:history.back()">목록으로</button>
+            </th>
+         </tr>
+      </table>
+      <div id="comment-container">
+          <div class="comment-editor">
+             <form action="${ path }/board/reply" method="POST">
+                <input type="hidden" name="boardNo" value="">
+                <input type="hidden" name="writer" value="">
+               <textarea name="content" cols="55" rows="3"></textarea>
+               <button type="submit" id="btn-insert">등록</button>                
+             </form>
+          </div>
+       </div>
+       <table id="tbl-comment">
+             <tr class="level1">
+             <td>
+                <sub class="comment-writer">aa</sub>
+                <sub class="comment-date">2021.05.07</sub>
+                <br>
+                컨텐츠
+             </td>
+             <td>
+                <button class="btn-delete">삭제</button>
 
-	    		</td>
-	    	</tr>
-	    </table>
+             </td>
+          </tr>
+       </table>
     </div>
 </section>
 

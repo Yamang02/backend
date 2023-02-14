@@ -24,34 +24,34 @@ public class EncodingFilter implements Filter {
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		System.out.println("인코딩 필터가 생성되어 초기화 진행");
+//		System.out.println("인코딩 필터가 생성되어 초기화 진행");
 	}
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		System.out.println("서블릿 동작 전 코드 실행");
+//		System.out.println("서블릿 동작 전 코드 실행");
 
 		String requestMethod = ((HttpServletRequest) request).getMethod();
 
 		if (requestMethod.equals("POST")) {
 			request.setCharacterEncoding("UTF-8");
 
-			System.out.println(request.getCharacterEncoding() + " 인코딩 완료");
+//			System.out.println(request.getCharacterEncoding() + " 인코딩 완료");
 		}
 
-		System.out.println(requestMethod);
+//		System.out.println(requestMethod);
 
 		// 다음 필터를 호출하거나, 마지막 필터면 Servlet, JSP 호출
 		chain.doFilter(request, response);
 
 //		response.setContentType("text/html; charset=UTF-8");
-		System.out.println("서블릿 동작 후 코드 실행");
+//		System.out.println("서블릿 동작 후 코드 실행");
 	}
 
 	@Override
 	public void destroy() {
-		System.out.println("인코딩 필터가 소멸됨");
+//		System.out.println("인코딩 필터가 소멸됨");
 	}
 
 }

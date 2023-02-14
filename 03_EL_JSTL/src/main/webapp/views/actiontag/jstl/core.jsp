@@ -149,6 +149,8 @@
 		<c:forEach var="student" items="${ list }" varStatus="status">
 			<tr>
 				<td>${ status.index }</td>
+				<!-- current 는 현재 반복되고 있는 값을 반환한다. -->
+				<td>${ status.current }</td>
 				<td>${ status.count }</td>
 				<td>${ student.name }</td>
 				<td>${ student.age }</td>
