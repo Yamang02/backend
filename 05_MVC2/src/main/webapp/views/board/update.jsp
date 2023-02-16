@@ -40,7 +40,7 @@ table#tbl-board td {
 		<h2>게시판 수정</h2>
 		<form action="${ path }/board/update" method="POST" enctype="multipart/form-data">
 			<input type="hidden" name="no" value="${ board.no }">
-			
+
 			<table id='tbl-board'>
 				<tr>
 					<th>제목</th>
@@ -59,9 +59,9 @@ table#tbl-board td {
 					<td>
 						<input type="file" name="upfile">
 						<c:if test="${ not empty board.originalFileName }">
-							<span>${ originalFileName }</span>
+							<br>
+							<span>${ board.originalFileName }</span>
 						</c:if>
-
 					</td>
 				</tr>
 				<tr>

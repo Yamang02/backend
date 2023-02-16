@@ -1,6 +1,8 @@
 package com.kh.mvc.board.controller;
 
+import java.io.File;
 import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -33,7 +35,7 @@ public class BoardUpdateServlet extends HttpServlet {
 		Member loginMember = session == null ? null : (Member) session.getAttribute("loginMember");
 
 		if (loginMember != null) {
-			Board board = new BoardService().getBoardByNo(Integer.parseInt(request.getParameter("no")));
+			Board board = new BoardService().getBoardByNo(Integer.parseInt(request.getParameter("no")), true);
 
 			if (board != null && loginMember.getId().equals(board.getWriterId())) {
 				request.setAttribute("board", board);
@@ -70,13 +72,27 @@ public class BoardUpdateServlet extends HttpServlet {
 
 			MultipartRequest mr = new MultipartRequest(request, path, maxSize, encoding, new FileRename());
 
-			if (loginMember.getId().equals(mr.getParameter("writer"))) {
+			Board board = new BoardService().getBoardByNo(Integer.parseInt(mr.getParameter("no")), true);
 
-				Board board = new Board();
-
-				board.setNo(Integer.parseInt(mr.getParameter("no")));
+			if (board != null && loginMember.getId().equals(board.getWriterId())) {
 				board.setTitle(mr.getParameter("title"));
 				board.setContent(mr.getParameter("content"));
+
+				// 사용자의 파일 업로드 여부를 체크
+				String originalFileName = mr.getOriginalFileName("upfile");
+				String filesystemName = mr.getFilesystemName("upfile");
+
+				if (originalFileName != null && filesystemName != null) {
+					// 기존에 업로드된 파일 삭제
+					File file = new File(path + "/" + board.getRenamedFileName());
+
+					if (file.exists()) {
+						file.delete();
+					}
+
+					board.setOriginalFileName(originalFileName);
+					board.setRenamedFileName(filesystemName);
+				}
 
 				int result = new BoardService().save(board);
 
@@ -98,10 +114,7 @@ public class BoardUpdateServlet extends HttpServlet {
 		} else {
 			request.setAttribute("msg", "로그인 후 사용이 가능합니다.");
 			request.setAttribute("location", "/");
-
 		}
 		request.getRequestDispatcher("/views/common/msg.jsp").forward(request, response);
-
 	}
-
 }
